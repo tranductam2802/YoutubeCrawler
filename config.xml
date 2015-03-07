@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<config>
+	<video-name>watch-headline-title</video-name>
+	<video-id></video-id>
+	<channel-name>yt-user-info</channel-name>
+	<channel-id>yt-uix-sessionlink</channel-id>
+	<view>watch-view-count</view>
+	<like>watch-like</like>
+	<dislike>watch-dislike</dislike>
+</config>

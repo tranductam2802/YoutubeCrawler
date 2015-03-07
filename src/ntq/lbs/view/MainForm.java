@@ -2,40 +2,41 @@ package ntq.lbs.view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.io.IOException;
+import java.util.Date;
 
 import javax.swing.JFrame;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
+import ntq.lbs.controller.ConfigReader;
+import ntq.lbs.controller.Crawler;
 
 public class MainForm extends JFrame {
 	private static final long serialVersionUID = -5201118736847043661L;
 	private static MainForm mainForm;
 
 	public static void main(String[] args) {
+		// TODO: Delete soon
+		Date dateStart = new Date();
+
+		// Loading configuration file
+		ConfigReader.loadConfig(true);
+
 		// Construct a new MainForm and show this form
-		MainForm currentMainForm = getInstance();
-		currentMainForm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		currentMainForm.setVisible(true);
+		// MainForm currentMainForm = getInstance();
+		// currentMainForm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		// currentMainForm.setVisible(true);
+
 		try {
-			processPage("http://youtube.com");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+			Crawler.crawVideo("xUF_15OaChU");
+		} catch (Exception e) {
 
-	public static void processPage(String URL) throws IOException {
-		System.out.println(URL);
-		Document doc = Jsoup.connect(URL).get();
-
-		// get all links and recursively call the processPage method
-		Elements questions = doc.select("a[href]");
-		for (Element link : questions) {
-			System.out.println(link.attr("href"));
 		}
+
+		// TODO: Delete soon
+		Date dateEnd = new Date();
+		System.out.println(String.valueOf(dateEnd.toString()));
+		System.out.println(String.valueOf(dateStart.toString()));
+		System.out.println(String.valueOf(dateEnd.getTime()
+				- dateStart.getTime()));
 	}
 
 	public static MainForm getInstance() {
