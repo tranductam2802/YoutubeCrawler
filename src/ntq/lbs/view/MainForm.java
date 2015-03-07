@@ -8,6 +8,7 @@ import javax.swing.JFrame;
 
 import ntq.lbs.controller.ConfigReader;
 import ntq.lbs.controller.Crawler;
+import ntq.lbs.util.StringUlti;
 
 public class MainForm extends JFrame {
 	private static final long serialVersionUID = -5201118736847043661L;
@@ -26,7 +27,8 @@ public class MainForm extends JFrame {
 		// currentMainForm.setVisible(true);
 
 		try {
-			Crawler.crawVideo("xUF_15OaChU");
+			Crawler.crawVideo(StringUlti
+					.getVideoId("https://www.youtube.com/watch?v=e5YDb-XnDVk&index=2&list=TLSCY43K5ZT1s"));
 		} catch (Exception e) {
 
 		}
