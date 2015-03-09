@@ -13,17 +13,17 @@ public class MySQLAccess {
 	static final String DB_URL = "jdbc:mysql://localhost/";
 
 	// Database credentials
-	static final String DB_USER = "username";
-	static final String DB_PASS = "password";
+	static final String DB_USER = "root";
+	static final String DB_PASS = "minhphuong";
 	static final String DB_NAME = "youtube";
-	static final String TABLE_VIDEO_NAME = "video";
+	static final String TABLE_VIDEO_NAME = "videos";
 	static final String PARAM_VIDEO_ID = "id";
 	static final String PARAM_VIDEO_NAME = "name";
 	static final String PARAM_VIDEO_CHANNEL_ID = "channel_id";
 	static final String PARAM_VIDEO_CHANNEL_NAME = "channel_name";
-	static final String PARAM_VIDEO_VIEW = "view";
-	static final String PARAM_VIDEO_LIKE = "like";
-	static final String PARAM_VIDEO_DISLIKE = "dislike";
+	static final String PARAM_VIDEO_VIEW = "view_num";
+	static final String PARAM_VIDEO_LIKE = "like_num";
+	static final String PARAM_VIDEO_DISLIKE = "dislike_num";
 
 	// Connection to MySQL
 	private Connection connection = null;
@@ -33,6 +33,105 @@ public class MySQLAccess {
 	private PreparedStatement preparedStatement = null;
 	// Result set from database
 	private ResultSet resultSet = null;
+
+	public void insert(Video video) throws Exception {
+		try {
+			// This will load the MySQL driver, each DB has its own driver
+			Class.forName(JDBC_DRIVER);
+			connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
+
+			// Statements allow to issue SQL queries to the database
+			statement = connection.createStatement();
+
+			// Check database exist
+			resultSet = connection.getMetaData().getCatalogs();
+			boolean isExist = false;
+			while (resultSet.next()) {
+				String databaseName = resultSet.getString(1);
+				if (databaseName.equals(DB_NAME)) {
+					isExist = true;
+					break;
+				}
+			}
+
+			if (!isExist) {
+				// Create database
+				String queryStatement = "CREATE DATABASE " + DB_NAME;
+				statement.executeUpdate(queryStatement);
+			}
+
+			// Reconnect to database
+			String url = DB_URL + DB_NAME;
+			connection = DriverManager.getConnection(url, DB_USER, DB_PASS);
+			statement = connection.createStatement();
+
+			// Create table id not exist
+			StringBuilder queryBuilder = new StringBuilder();
+			queryBuilder.append("CREATE TABLE IF NOT EXISTS ");
+			queryBuilder.append(TABLE_VIDEO_NAME);
+			queryBuilder.append(" (");
+			queryBuilder.append(PARAM_VIDEO_ID);
+			queryBuilder.append(" VARCHAR(50) PRIMARY KEY NOT NULL, ");
+			queryBuilder.append(PARAM_VIDEO_NAME);
+			queryBuilder.append(" NVARCHAR(255), ");
+
+			queryBuilder.append(PARAM_VIDEO_CHANNEL_ID);
+			queryBuilder.append(" VARCHAR(50), ");
+			queryBuilder.append(PARAM_VIDEO_CHANNEL_NAME);
+			queryBuilder.append(" NVARCHAR(255), ");
+			queryBuilder.append(PARAM_VIDEO_VIEW);
+			queryBuilder.append(" VARCHAR(15), ");
+
+			queryBuilder.append(PARAM_VIDEO_LIKE);
+			queryBuilder.append(" VARCHAR(15), ");
+			queryBuilder.append(PARAM_VIDEO_DISLIKE);
+			queryBuilder.append(" VARCHAR(15))");
+
+			String queryStatement = queryBuilder.toString();
+			statement.executeUpdate(queryStatement);
+
+			// Insert to database
+			queryBuilder = new StringBuilder();
+			queryBuilder.append("INSERT INTO ");
+			queryBuilder.append(TABLE_VIDEO_NAME);
+			queryBuilder.append("(");
+			queryBuilder.append(PARAM_VIDEO_ID);
+			queryBuilder.append(", ");
+			queryBuilder.append(PARAM_VIDEO_NAME);
+			queryBuilder.append(", ");
+			queryBuilder.append(PARAM_VIDEO_CHANNEL_ID);
+			queryBuilder.append(", ");
+			queryBuilder.append(PARAM_VIDEO_CHANNEL_NAME);
+			queryBuilder.append(", ");
+			queryBuilder.append(PARAM_VIDEO_VIEW);
+			queryBuilder.append(", ");
+			queryBuilder.append(PARAM_VIDEO_LIKE);
+			queryBuilder.append(", ");
+			queryBuilder.append(PARAM_VIDEO_DISLIKE);
+			queryBuilder.append(") VALUES(");
+			queryBuilder.append(video.getId());
+			queryBuilder.append(", ");
+			queryBuilder.append(video.getName());
+			queryBuilder.append(", ");
+			queryBuilder.append(video.getChannelId());
+			queryBuilder.append(", ");
+			queryBuilder.append(video.getChannelName());
+			queryBuilder.append(", ");
+			queryBuilder.append(video.getView());
+			queryBuilder.append(", ");
+			queryBuilder.append(video.getLike());
+			queryBuilder.append(", ");
+			queryBuilder.append(video.getDislike());
+			queryBuilder.append(");");
+
+			queryStatement = queryBuilder.toString();
+			statement.executeUpdate(queryStatement);
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			close();
+		}
+	}
 
 	public void read(IOnReadResult onReadResult) throws Exception {
 		try {
@@ -60,34 +159,32 @@ public class MySQLAccess {
 				statement.executeUpdate(queryStatement);
 			}
 
+			// Reconnect to database
+			String url = DB_URL + DB_NAME;
+			connection = DriverManager.getConnection(url, DB_USER, DB_PASS);
+			statement = connection.createStatement();
+
 			// Create table id not exist
 			StringBuilder queryBuilder = new StringBuilder();
 			queryBuilder.append("CREATE TABLE IF NOT EXISTS ");
 			queryBuilder.append(TABLE_VIDEO_NAME);
-			queryBuilder.append("(");
-
+			queryBuilder.append(" (");
 			queryBuilder.append(PARAM_VIDEO_ID);
-			queryBuilder.append(" VARCHAR(50) not NULL, ");
-
+			queryBuilder.append(" VARCHAR(50) PRIMARY KEY NOT NULL, ");
 			queryBuilder.append(PARAM_VIDEO_NAME);
-			queryBuilder.append(" VARCHAR(255), ");
+			queryBuilder.append(" NVARCHAR(255), ");
 
 			queryBuilder.append(PARAM_VIDEO_CHANNEL_ID);
 			queryBuilder.append(" VARCHAR(50), ");
-
 			queryBuilder.append(PARAM_VIDEO_CHANNEL_NAME);
-			queryBuilder.append(" VARCHAR(255), ");
-
+			queryBuilder.append(" NVARCHAR(255), ");
 			queryBuilder.append(PARAM_VIDEO_VIEW);
 			queryBuilder.append(" VARCHAR(15), ");
 
 			queryBuilder.append(PARAM_VIDEO_LIKE);
 			queryBuilder.append(" VARCHAR(15), ");
-
 			queryBuilder.append(PARAM_VIDEO_DISLIKE);
-			queryBuilder.append(" VARCHAR(15), PRIMARY KEY (");
-			queryBuilder.append(PARAM_VIDEO_ID);
-			queryBuilder.append("))");
+			queryBuilder.append(" VARCHAR(15))");
 
 			String queryStatement = queryBuilder.toString();
 			statement.executeUpdate(queryStatement);

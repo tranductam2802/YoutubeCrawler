@@ -3,6 +3,7 @@ package ntq.lbs.main;
 import java.util.Date;
 
 import ntq.lbs.controller.ConfigReader;
+import ntq.lbs.controller.Crawler;
 import ntq.lbs.model.MySQLAccess;
 import ntq.lbs.model.MySQLAccess.IOnReadResult;
 import ntq.lbs.model.Video;
@@ -17,6 +18,8 @@ public class Main {
 		ConfigReader.loadConfig(true);
 		MySQLAccess dao = new MySQLAccess();
 		try {
+			dao.insert(Crawler.crawVideo("vpfn0UTNIx0"));
+
 			dao.read(new IOnReadResult() {
 				public void onSuccess(Video video) {
 					// TODO Auto-generated method stub
