@@ -5,7 +5,6 @@ import java.util.Date;
 
 import javax.swing.JFrame;
 
-import ntq.lbs.controller.ConfigReader;
 import ntq.lbs.controller.CrawlerQueue;
 import ntq.lbs.controller.CrawlerThread.IOnCrawVideo;
 import ntq.lbs.model.Video;
@@ -14,29 +13,10 @@ public class MainForm extends JFrame implements IOnCrawVideo {
 	private static final long serialVersionUID = -5201118736847043661L;
 	private static MainForm mainForm;
 
-	public static void main(String[] args) {
-		// TODO: Delete soon
-		Date dateStart = new Date();
-		System.out.println(String.valueOf("Start: " + dateStart.toString()));
-
-		// Loading configuration file
-		ConfigReader.loadConfig(true);
-
-		// Construct a new MainForm and show this form
-		// MainForm currentMainForm = getInstance();
-		// currentMainForm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		// currentMainForm.setVisible(true);
-
-		// TODO: Delete soon
-		Date dateEnd = new Date();
-		System.out.println(String.valueOf("End: " + dateEnd.toString()));
-	}
-
 	public static MainForm getInstance() {
 		if (mainForm == null) {
 			mainForm = new MainForm();
 		}
-
 		return mainForm;
 	}
 
