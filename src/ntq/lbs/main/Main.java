@@ -18,7 +18,7 @@ public class Main {
 		ConfigReader.loadConfig(true);
 		MySQLAccess dao = new MySQLAccess();
 		try {
-			dao.insert(Crawler.crawVideo("vpfn0UTNIx0"));
+			dao.insert(Crawler.crawVideo("0q8Z17z4cB8"));
 
 			dao.read(new IOnReadResult() {
 				public void onSuccess(Video video) {

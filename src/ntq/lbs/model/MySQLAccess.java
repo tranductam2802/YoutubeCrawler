@@ -97,32 +97,37 @@ public class MySQLAccess {
 			queryBuilder.append("(");
 			queryBuilder.append(PARAM_VIDEO_ID);
 			queryBuilder.append(", ");
+			
 			queryBuilder.append(PARAM_VIDEO_NAME);
 			queryBuilder.append(", ");
 			queryBuilder.append(PARAM_VIDEO_CHANNEL_ID);
 			queryBuilder.append(", ");
 			queryBuilder.append(PARAM_VIDEO_CHANNEL_NAME);
 			queryBuilder.append(", ");
+			
 			queryBuilder.append(PARAM_VIDEO_VIEW);
 			queryBuilder.append(", ");
 			queryBuilder.append(PARAM_VIDEO_LIKE);
 			queryBuilder.append(", ");
 			queryBuilder.append(PARAM_VIDEO_DISLIKE);
-			queryBuilder.append(") VALUES(");
+			
+			queryBuilder.append(") VALUES('");
 			queryBuilder.append(video.getId());
-			queryBuilder.append(", ");
+			queryBuilder.append("', '");
 			queryBuilder.append(video.getName());
-			queryBuilder.append(", ");
+			queryBuilder.append("', '");
 			queryBuilder.append(video.getChannelId());
-			queryBuilder.append(", ");
+			
+			queryBuilder.append("', '");
 			queryBuilder.append(video.getChannelName());
-			queryBuilder.append(", ");
+			queryBuilder.append("', '");
 			queryBuilder.append(video.getView());
-			queryBuilder.append(", ");
+			
+			queryBuilder.append("', '");
 			queryBuilder.append(video.getLike());
-			queryBuilder.append(", ");
+			queryBuilder.append("', '");
 			queryBuilder.append(video.getDislike());
-			queryBuilder.append(");");
+			queryBuilder.append("');");
 
 			queryStatement = queryBuilder.toString();
 			statement.executeUpdate(queryStatement);
