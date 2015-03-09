@@ -1,22 +1,23 @@
 package ntq.lbs.view;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.util.Date;
 
 import javax.swing.JFrame;
 
 import ntq.lbs.controller.ConfigReader;
-import ntq.lbs.controller.Crawler;
-import ntq.lbs.util.StringUlti;
+import ntq.lbs.controller.CrawlerQueue;
+import ntq.lbs.controller.CrawlerThread.IOnCrawVideo;
+import ntq.lbs.model.Video;
 
-public class MainForm extends JFrame {
+public class MainForm extends JFrame implements IOnCrawVideo {
 	private static final long serialVersionUID = -5201118736847043661L;
 	private static MainForm mainForm;
 
 	public static void main(String[] args) {
 		// TODO: Delete soon
 		Date dateStart = new Date();
+		System.out.println(String.valueOf("Start: " + dateStart.toString()));
 
 		// Loading configuration file
 		ConfigReader.loadConfig(true);
@@ -26,19 +27,9 @@ public class MainForm extends JFrame {
 		// currentMainForm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		// currentMainForm.setVisible(true);
 
-		try {
-			Crawler.crawVideo(StringUlti
-					.getVideoId("h?v=_HhFex1RVVc&list=TLSCY43K5ZT1s&index=3"));
-		} catch (Exception e) {
-
-		}
-
 		// TODO: Delete soon
 		Date dateEnd = new Date();
-		System.out.println(String.valueOf(dateEnd.toString()));
-		System.out.println(String.valueOf(dateStart.toString()));
-		System.out.println(String.valueOf(dateEnd.getTime()
-				- dateStart.getTime()));
+		System.out.println(String.valueOf("End: " + dateEnd.toString()));
 	}
 
 	public static MainForm getInstance() {
@@ -55,16 +46,28 @@ public class MainForm extends JFrame {
 		// Setting channel panel
 		ChannelPanel channelPanel = new ChannelPanel();
 		channelPanel.setSize(10, 10);
-		channelPanel.setBackground(Color.BLACK);
 
 		// Setting video panel
 		VideoPanel videoPanel = new VideoPanel();
 		videoPanel.setSize(10, 10);
-		videoPanel.setBackground(Color.BLUE);
 
 		// Update main form
 		add(channelPanel, BorderLayout.WEST);
 		add(videoPanel, BorderLayout.EAST);
-		setResizable(false);
+		setSize(200, 100);
+		// setResizable(false);
+	}
+
+	public void onSuccess(Video video) {
+		// TODO Auto-generated method stub
+		System.out.println(video.toString());
+		CrawlerQueue.notifyDataChanged();
+		Date date = new Date();
+		System.out.println(String.valueOf("Date: " + date.toString()));
+	}
+
+	public void onError(String msg) {
+		// TODO Auto-generated method stub
+		System.out.println(msg);
 	}
 }

@@ -11,7 +11,7 @@ public class StringUlti {
 	public static String getVideoId(String url) {
 		int index = url.lastIndexOf(PARAM_VIDEO);
 		if (index == -1) {
-			return "";
+			return url;
 		} else {
 			index += PARAM_VIDEO.length();
 			if (url.length() > index) {
@@ -23,7 +23,7 @@ public class StringUlti {
 					return temp.substring(0, index);
 				}
 			} else {
-				return "";
+				return url;
 			}
 		}
 	}

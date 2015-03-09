@@ -64,4 +64,24 @@ public class Video {
 	public Video(String id) {
 		this.id = id;
 	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("Video id: " + id);
+		builder.append("\n");
+		builder.append("Name: " + name);
+		builder.append("\n");
+		builder.append("Channel id: " + channelId);
+		builder.append("\n");
+		builder.append("Channel name: " + channelName);
+		builder.append("\n");
+		builder.append("View: " + view);
+		builder.append("\n");
+		builder.append("Like: " + like);
+		builder.append("\n");
+		builder.append("Dislike: " + dislike);
+		builder.append("\n");
+		return builder.toString();
+	}
 }

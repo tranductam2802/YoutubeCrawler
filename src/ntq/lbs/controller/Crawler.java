@@ -30,7 +30,6 @@ public class Crawler {
 
 		// Connect to the Web
 		String url = urlBuilder.toString();
-		System.out.println(url);
 		Document document = Jsoup.connect(url).get();
 
 		// Create video to collect data
@@ -47,7 +46,6 @@ public class Crawler {
 					String name = spanElement.childNode(0).toString().trim();
 					name = Jsoup.parse(name).text();
 					video.setName(name);
-					System.out.println("Name: " + name);
 				}
 			}
 
@@ -62,14 +60,12 @@ public class Crawler {
 					String channelId = StringUlti.getChannelId(aElement
 							.attr("href"));
 					video.setChannelId(channelId);
-					System.out.println("Channel id: " + channelId);
 
 					// Get channel name
 					String channelName = aElement.childNode(0).toString()
 							.trim();
 					channelName = Jsoup.parse(channelName).text();
 					video.setChannelName(channelName);
-					System.out.println("Channel name: " + channelName);
 				}
 			}
 
@@ -77,7 +73,6 @@ public class Crawler {
 			if (divElement.attr("class").equals(ConfigReader.getViewElement())) {
 				String view = divElement.childNode(0).toString().trim();
 				video.setView(view);
-				System.out.println("View: " + view);
 			}
 		}
 
@@ -90,7 +85,6 @@ public class Crawler {
 					Element spaneElement = spanTags.get(0);
 					String like = spaneElement.childNode(0).toString().trim();
 					video.setLike(like);
-					System.out.println("Like: " + like);
 				}
 			}
 
@@ -103,7 +97,6 @@ public class Crawler {
 					String dislike = spaneElement.childNode(0).toString()
 							.trim();
 					video.setDislike(dislike);
-					System.out.println("Dislike: " + dislike);
 				}
 			}
 		}
