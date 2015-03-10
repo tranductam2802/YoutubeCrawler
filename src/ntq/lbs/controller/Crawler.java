@@ -1,6 +1,7 @@
 package ntq.lbs.controller;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.Date;
 import java.util.List;
 
@@ -30,7 +31,8 @@ public class Crawler {
 
 		// Connect to the Web
 		String url = urlBuilder.toString();
-		Document document = Jsoup.connect(url).get();
+		Document document = Jsoup
+				.parse(new URL(url).openStream(), "UTF-8", url);
 
 		// Create video to collect data
 		Video video = new Video(videoId);

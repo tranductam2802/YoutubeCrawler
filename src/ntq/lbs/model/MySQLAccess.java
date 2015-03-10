@@ -11,6 +11,7 @@ public class MySQLAccess {
 	// JDBC driver name and database URL
 	static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
 	static final String DB_URL = "jdbc:mysql://localhost/";
+	static final String DB_ENCODING_UTF8 = "?useUnicode=true&characterEncoding=utf-8";
 
 	// Database credentials
 	static final String DB_USER = "root";
@@ -33,6 +34,49 @@ public class MySQLAccess {
 	private PreparedStatement preparedStatement = null;
 	// Result set from database
 	private ResultSet resultSet = null;
+
+	public void delete(String videoId) throws Exception {
+		try {
+			// This will load the MySQL driver, each DB has its own driver
+			Class.forName(JDBC_DRIVER);
+			connection = DriverManager.getConnection(DB_URL + DB_NAME, DB_USER,
+					DB_PASS);
+
+			// Statements allow to issue SQL queries to the database
+			statement = connection.createStatement();
+
+			// Check database exist
+			resultSet = connection.getMetaData().getCatalogs();
+			boolean isExist = false;
+			while (resultSet.next()) {
+				String databaseName = resultSet.getString(1);
+				if (databaseName.equals(DB_NAME)) {
+					isExist = true;
+					break;
+				}
+			}
+
+			if (!isExist) {
+				return;
+			}
+
+			// Delete row
+			StringBuilder queryBuilder = new StringBuilder();
+			queryBuilder.append("DELETE FROM ");
+			queryBuilder.append(TABLE_VIDEO_NAME);
+			queryBuilder.append(" WHERE ");
+			queryBuilder.append(PARAM_VIDEO_ID);
+			queryBuilder.append("='");
+			queryBuilder.append(videoId);
+			queryBuilder.append("';");
+
+			statement.executeUpdate(queryBuilder.toString());
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			close();
+		}
+	}
 
 	public void insert(Video video) throws Exception {
 		try {
@@ -61,7 +105,7 @@ public class MySQLAccess {
 			}
 
 			// Reconnect to database
-			String url = DB_URL + DB_NAME;
+			String url = DB_URL + DB_NAME + DB_ENCODING_UTF8;
 			connection = DriverManager.getConnection(url, DB_USER, DB_PASS);
 			statement = connection.createStatement();
 
@@ -90,52 +134,113 @@ public class MySQLAccess {
 			String queryStatement = queryBuilder.toString();
 			statement.executeUpdate(queryStatement);
 
-			// Insert to database
-			queryBuilder = new StringBuilder();
-			queryBuilder.append("INSERT INTO ");
-			queryBuilder.append(TABLE_VIDEO_NAME);
-			queryBuilder.append("(");
-			queryBuilder.append(PARAM_VIDEO_ID);
-			queryBuilder.append(", ");
-			
-			queryBuilder.append(PARAM_VIDEO_NAME);
-			queryBuilder.append(", ");
-			queryBuilder.append(PARAM_VIDEO_CHANNEL_ID);
-			queryBuilder.append(", ");
-			queryBuilder.append(PARAM_VIDEO_CHANNEL_NAME);
-			queryBuilder.append(", ");
-			
-			queryBuilder.append(PARAM_VIDEO_VIEW);
-			queryBuilder.append(", ");
-			queryBuilder.append(PARAM_VIDEO_LIKE);
-			queryBuilder.append(", ");
-			queryBuilder.append(PARAM_VIDEO_DISLIKE);
-			
-			queryBuilder.append(") VALUES('");
-			queryBuilder.append(video.getId());
-			queryBuilder.append("', '");
-			queryBuilder.append(video.getName());
-			queryBuilder.append("', '");
-			queryBuilder.append(video.getChannelId());
-			
-			queryBuilder.append("', '");
-			queryBuilder.append(video.getChannelName());
-			queryBuilder.append("', '");
-			queryBuilder.append(video.getView());
-			
-			queryBuilder.append("', '");
-			queryBuilder.append(video.getLike());
-			queryBuilder.append("', '");
-			queryBuilder.append(video.getDislike());
-			queryBuilder.append("');");
-
-			queryStatement = queryBuilder.toString();
-			statement.executeUpdate(queryStatement);
+			// Check video id existed
+			String videoId = video.getId();
+			resultSet = statement.executeQuery(checkIdExistedQuery(videoId));
+			if (resultSet.next()) {
+				// Update to database
+				statement.executeUpdate(updateQuery(video));
+			} else {
+				// Insert to database
+				statement.executeUpdate(insertQuery(video));
+			}
 		} catch (Exception e) {
 			throw e;
 		} finally {
 			close();
 		}
+	}
+
+	private String checkIdExistedQuery(String videoId) {
+		StringBuilder queryBuilder = new StringBuilder();
+		queryBuilder.append("SELECT * FROM ");
+		queryBuilder.append(TABLE_VIDEO_NAME);
+		queryBuilder.append(" WHERE ");
+		queryBuilder.append(PARAM_VIDEO_ID);
+		queryBuilder.append(" = '");
+		queryBuilder.append(videoId);
+		queryBuilder.append("'");
+
+		return queryBuilder.toString();
+	}
+
+	private String updateQuery(Video video) {
+		StringBuilder queryBuilder = new StringBuilder();
+		queryBuilder.append("UPDATE ");
+		queryBuilder.append(TABLE_VIDEO_NAME);
+		queryBuilder.append(" SET ");
+		queryBuilder.append(PARAM_VIDEO_NAME);
+		queryBuilder.append("='");
+		queryBuilder.append(video.getName());
+		queryBuilder.append("', ");
+		queryBuilder.append(PARAM_VIDEO_CHANNEL_ID);
+		queryBuilder.append("='");
+		queryBuilder.append(video.getChannelId());
+		queryBuilder.append("', ");
+		queryBuilder.append(PARAM_VIDEO_CHANNEL_NAME);
+		queryBuilder.append("='");
+		queryBuilder.append(video.getChannelName());
+		queryBuilder.append("', ");
+		queryBuilder.append(PARAM_VIDEO_VIEW);
+		queryBuilder.append("='");
+		queryBuilder.append(video.getView());
+		queryBuilder.append("', ");
+		queryBuilder.append(PARAM_VIDEO_LIKE);
+		queryBuilder.append("='");
+		queryBuilder.append(video.getLike());
+		queryBuilder.append("', ");
+		queryBuilder.append(PARAM_VIDEO_DISLIKE);
+		queryBuilder.append("='");
+		queryBuilder.append(video.getDislike());
+		queryBuilder.append("' WHERE ");
+		queryBuilder.append(PARAM_VIDEO_ID);
+		queryBuilder.append("='");
+		queryBuilder.append(video.getId());
+		queryBuilder.append("'");
+
+		return queryBuilder.toString();
+	}
+
+	private String insertQuery(Video video) {
+		StringBuilder queryBuilder = new StringBuilder();
+		queryBuilder.append("INSERT INTO ");
+		queryBuilder.append(TABLE_VIDEO_NAME);
+		queryBuilder.append("(");
+		queryBuilder.append(PARAM_VIDEO_ID);
+		queryBuilder.append(", ");
+
+		queryBuilder.append(PARAM_VIDEO_NAME);
+		queryBuilder.append(", ");
+		queryBuilder.append(PARAM_VIDEO_CHANNEL_ID);
+		queryBuilder.append(", ");
+		queryBuilder.append(PARAM_VIDEO_CHANNEL_NAME);
+		queryBuilder.append(", ");
+
+		queryBuilder.append(PARAM_VIDEO_VIEW);
+		queryBuilder.append(", ");
+		queryBuilder.append(PARAM_VIDEO_LIKE);
+		queryBuilder.append(", ");
+		queryBuilder.append(PARAM_VIDEO_DISLIKE);
+
+		queryBuilder.append(") VALUES('");
+		queryBuilder.append(video.getId());
+		queryBuilder.append("', '");
+		queryBuilder.append(video.getName());
+		queryBuilder.append("', '");
+		queryBuilder.append(video.getChannelId());
+
+		queryBuilder.append("', '");
+		queryBuilder.append(video.getChannelName());
+		queryBuilder.append("', '");
+		queryBuilder.append(video.getView());
+
+		queryBuilder.append("', '");
+		queryBuilder.append(video.getLike());
+		queryBuilder.append("', '");
+		queryBuilder.append(video.getDislike());
+		queryBuilder.append("');");
+
+		return queryBuilder.toString();
 	}
 
 	public void read(IOnReadResult onReadResult) throws Exception {
@@ -165,7 +270,7 @@ public class MySQLAccess {
 			}
 
 			// Reconnect to database
-			String url = DB_URL + DB_NAME;
+			String url = DB_URL + DB_NAME + DB_ENCODING_UTF8;
 			connection = DriverManager.getConnection(url, DB_USER, DB_PASS);
 			statement = connection.createStatement();
 

@@ -7,6 +7,7 @@ import ntq.lbs.controller.Crawler;
 import ntq.lbs.model.MySQLAccess;
 import ntq.lbs.model.MySQLAccess.IOnReadResult;
 import ntq.lbs.model.Video;
+import ntq.lbs.view.MainForm;
 
 public class Main {
 	public static void main(String[] args) {
@@ -18,7 +19,7 @@ public class Main {
 		ConfigReader.loadConfig(true);
 		MySQLAccess dao = new MySQLAccess();
 		try {
-			dao.insert(Crawler.crawVideo("0q8Z17z4cB8"));
+			dao.delete("vpfn0UTNIx0");
 
 			dao.read(new IOnReadResult() {
 				public void onSuccess(Video video) {
