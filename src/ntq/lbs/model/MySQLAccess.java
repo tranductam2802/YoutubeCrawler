@@ -30,8 +30,6 @@ public class MySQLAccess {
 	private Connection connection = null;
 	// Statement keep query statement
 	private Statement statement = null;
-	// Query to database
-	private PreparedStatement preparedStatement = null;
 	// Result set from database
 	private ResultSet resultSet = null;
 

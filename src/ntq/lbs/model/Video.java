@@ -68,7 +68,7 @@ public class Video {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Video id: " + id);
+		builder.append("\tVideo id: " + id);
 		builder.append("\n");
 		builder.append("Name: " + name);
 		builder.append("\n");
@@ -81,7 +81,6 @@ public class Video {
 		builder.append("Like: " + like);
 		builder.append("\n");
 		builder.append("Dislike: " + dislike);
-		builder.append("\n");
 		return builder.toString();
 	}
 }

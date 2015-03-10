@@ -5,7 +5,7 @@ public class Config {
 	public static final boolean IS_DEBUG = true;
 
 	/** Number of thread */
-	public static final int THREAD_NUM = 2;
+	public static final int THREAD_NUM = 10;
 
 	/** Application name */
 	public static final String APP_NAME = "YoutubeCrawler";
