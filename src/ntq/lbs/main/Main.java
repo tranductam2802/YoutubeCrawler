@@ -12,10 +12,10 @@ import ntq.lbs.model.MySQLAccess.IOnReadResult;
 import ntq.lbs.model.Video;
 
 public class Main {
-	private static int THREAHOLD = 39;
+	private static int THREAHOLD = 38;
 	private static List<Video> a = new ArrayList<Video>();
-	
-	private static synchronized void de(){
+
+	private static synchronized void de() {
 		THREAHOLD--;
 	}
 
@@ -48,7 +48,6 @@ public class Main {
 			CrawlerQueue.add("r1OtnOs-utU", onCrawVideo);
 			CrawlerQueue.add("BDw77bVNPo8", onCrawVideo);
 			CrawlerQueue.add("lAkoANzq750", onCrawVideo);
-			CrawlerQueue.add("lAkoANzq650", onCrawVideo);
 			CrawlerQueue.add("VGTQi5QqR0w", onCrawVideo);
 			CrawlerQueue.add("m6ndiBURmlQ", onCrawVideo);
 			CrawlerQueue.add("3jj-MSFwRfQ", onCrawVideo);

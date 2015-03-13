@@ -2,19 +2,13 @@ package ntq.lbs.controller;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Date;
-import java.util.List;
-
-import javax.swing.text.html.HTML;
 
 import ntq.lbs.model.Video;
 import ntq.lbs.util.StringUlti;
 
 import org.jsoup.Jsoup;
-import org.jsoup.examples.HtmlToPlainText;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.nodes.Node;
 import org.jsoup.select.Elements;
 
 /** Youtube main crawler */
