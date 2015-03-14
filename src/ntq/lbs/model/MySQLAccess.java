@@ -2,7 +2,6 @@ package ntq.lbs.model;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -32,6 +31,44 @@ public class MySQLAccess {
 	private Statement statement = null;
 	// Result set from database
 	private ResultSet resultSet = null;
+
+	public void drop() throws Exception {
+		try {
+			// This will load the MySQL driver, each DB has its own driver
+			Class.forName(JDBC_DRIVER);
+			connection = DriverManager.getConnection(DB_URL + DB_NAME, DB_USER,
+					DB_PASS);
+
+			// Statements allow to issue SQL queries to the database
+			statement = connection.createStatement();
+
+			// Check database exist
+			resultSet = connection.getMetaData().getCatalogs();
+			boolean isExist = false;
+			while (resultSet.next()) {
+				String databaseName = resultSet.getString(1);
+				if (databaseName.equals(DB_NAME)) {
+					isExist = true;
+					break;
+				}
+			}
+
+			if (!isExist) {
+				return;
+			}
+
+			// Delete row
+			StringBuilder queryBuilder = new StringBuilder();
+			queryBuilder.append("DROP TABLE ");
+			queryBuilder.append(TABLE_VIDEO_NAME);
+
+			statement.executeUpdate(queryBuilder.toString());
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			close();
+		}
+	}
 
 	public void delete(String videoId) throws Exception {
 		try {
@@ -98,7 +135,8 @@ public class MySQLAccess {
 
 			if (!isExist) {
 				// Create database
-				String queryStatement = "CREATE DATABASE " + DB_NAME;
+				String queryStatement = "CREATE DATABASE " + DB_NAME
+						+ " DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci";
 				statement.executeUpdate(queryStatement);
 			}
 
@@ -263,7 +301,8 @@ public class MySQLAccess {
 
 			if (!isExist) {
 				// Create database
-				String queryStatement = "CREATE DATABASE " + DB_NAME;
+				String queryStatement = "CREATE DATABASE " + DB_NAME
+						+ " DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci";
 				statement.executeUpdate(queryStatement);
 			}
 
