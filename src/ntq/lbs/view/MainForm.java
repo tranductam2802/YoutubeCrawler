@@ -1,6 +1,5 @@
 package ntq.lbs.view;
 
-import java.awt.BorderLayout;
 import java.util.Date;
 
 import javax.swing.JFrame;
@@ -13,28 +12,26 @@ public class MainForm extends JFrame implements IOnCrawVideo {
 	private static final long serialVersionUID = -5201118736847043661L;
 	private static MainForm mainForm;
 
-	public static MainForm getInstance() {
+	public static MainForm getInstance(String title) {
 		if (mainForm == null) {
-			mainForm = new MainForm();
+			mainForm = new MainForm(title);
 		}
 		return mainForm;
 	}
 
-	private MainForm() {
+	private MainForm(String title) {
 		// Singleton pattern - Only one window on this program
+		setTitle(title);
 
-		// Setting channel panel
-		ChannelPanel channelPanel = new ChannelPanel();
-		channelPanel.setSize(10, 10);
+		// TODO: Setting channel panel
 
 		// Setting video panel
 		VideoPanel videoPanel = new VideoPanel();
-		videoPanel.setSize(10, 10);
 
 		// Update main form
-		add(channelPanel, BorderLayout.WEST);
-		add(videoPanel, BorderLayout.EAST);
-		setSize(200, 100);
+		videoPanel.setOpaque(true);
+		setContentPane(videoPanel);
+
 		// setResizable(false);
 	}
 
